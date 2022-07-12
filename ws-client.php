@@ -188,7 +188,7 @@ $JSESSIONID = getSession($AlcUserId);
 
 // Infinite loop - get data and send it to WebSocket
 while (true) {
-    sleep(3);
+    sleep(5);
 
     // session expired - get new
     if ($GLOBALS['JSESSIONIDEXP'] < time()) {

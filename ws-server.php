@@ -14,8 +14,8 @@ while (true) {
     socket_select($newClientReader, $null, $null, 10);
     if (in_array($socket, $newClientReader)) {
         $newClient = socket_accept($socket);
-        echo "Client connected.\n";
         $clients[] = $newClient;
+        echo "Client connected. Total: " . count($clients) - 1 . "\n";
         $header = socket_read($newClient, 4096);
         handshake($newClient, $header);
         $newClientIndex = array_search($socket, $newClientReader);
@@ -31,7 +31,7 @@ while (true) {
         if ($clientData === false) {
             $clientIndex = array_search($client, $clients);
             unset($clients[$clientIndex]);
-            echo "Client disconnected.\n";
+            echo "Client disconnected. Total: " . count($clients) - 1 . "\n";
         }
     }
 }

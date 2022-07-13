@@ -1,0 +1,12 @@
+[Unit]
+ Description=Alcatel Client
+ ConditionPathExists=/opt/ws-client.php
+ Wants=ws-server.service
+
+[Service]
+ Type=simple
+ ExecStart=/usr/bin/php -f /opt/ws-client.php
+ Restart=always
+
+[Install]
+ WantedBy=multi-user.target

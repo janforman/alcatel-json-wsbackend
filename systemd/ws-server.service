@@ -1,0 +1,11 @@
+[Unit]
+ Description=WebSocket Server
+ ConditionPathExists=/opt/ws-server.php
+
+[Service]
+ Type=simple
+ ExecStart=/usr/bin/php -f /opt/ws-server.php
+ Restart=always
+
+[Install]
+ WantedBy=multi-user.target

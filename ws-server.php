@@ -4,14 +4,14 @@
 require('config.php');
 
 $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-socket_set_option($socket, SOL_SOCKET, SO_REUSEADDR, 1);
+socket_set_option($socket, SOL_SOCKET, SO_REUSEADDR, array('sec'=>1,'usec'=>500000));
 socket_bind($socket, $address, $port);
 socket_listen($socket);
 $clients = [$socket];
 $null = null;
 while (true) {
     $newClientReader = $clients;
-    socket_select($newClientReader, $null, $null, 10);
+    socket_select($newClientReader, $null, $null, 3);
     if (in_array($socket, $newClientReader)) {
         $newClient = socket_accept($socket);
         echo "Client connected.\n";

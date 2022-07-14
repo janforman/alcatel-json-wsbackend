@@ -11,7 +11,7 @@ $clients = [$socket];
 $null = null;
 while (true) {
     $newClientReader = $clients;
-    socket_select($newClientReader, $null, $null, 10);
+    if (socket_select($newClientReader, $null, $null, 12) < 1) continue;
     if (in_array($socket, $newClientReader)) {
         $newClient = socket_accept($socket);
         $clients[] = $newClient;

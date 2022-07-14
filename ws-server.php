@@ -6,13 +6,13 @@ require('config.php');
 $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 socket_set_option($socket, SOL_SOCKET, SO_REUSEADDR, 1);
 socket_bind($socket, $address, $port);
-socket_listen($socket);
+socket_listen($socket, 5);
 $clients = [$socket];
 $null = null;
 
 while (true) {
     $newClientReader = $clients;
-    if (socket_select($newClientReader, $null, $null, 12) < 1) continue;
+    if (socket_select($newClientReader, $null, $null, 10) < 1) continue;
     if (in_array($socket, $newClientReader)) {
         $newClient = socket_accept($socket);
         $clients[] = $newClient;
@@ -31,11 +31,11 @@ while (true) {
 
         $code = socket_last_error($client);
         socket_clear_error($client);
-        if ($code != SOCKET_EAGAIN) {
+        if ($code != SOCKET_EAGAIN and $code != 0) {
             // Connection most likely closed
             $clientIndex = array_search($client, $clients);
             unset($clients[$clientIndex]);
-            echo "Client disconnected. Total: " . count($clients) - 1 . "\n";
+            echo "Client disconnected: " . socket_strerror($code) . " Total: " . count($clients) - 1 . "\n";
         }
     }
 }

@@ -188,7 +188,7 @@ $JSESSIONID = getSession($AlcUserId);
 
 // Infinite loop - get data and send it to WebSocket
 while (true) {
-    sleep(5);
+    sleep(2);
 
     // session expired - get new
     if ($GLOBALS['JSESSIONIDEXP'] < time()) {
@@ -225,7 +225,7 @@ while (true) {
 
     $json = array();
     foreach ($slist as $key => $value) {
-        @$json[$value] = '"inqueue" : 0,"logged" : ' . $activeSkill[$key][2] . ',"available" : ' . $activeSkill[$key][0];
+        @$json[$value] = '"inqueue" : 0,"logged" : ' . int($activeSkill[$key][2]) . ',"available" : ' . int($activeSkill[$key][0]);
     }
 
     // send to websocket
@@ -270,6 +270,7 @@ while (true) {
     $response = hybi10Encode($content);
     @socket_write($client, $response, strlen($response));
 
+    sleep(2);
     // rcs as status
     $rcs = '{"event":"RCS","data":{"rcsstatus":"OK"}}';
     $response = hybi10Encode($rcs);

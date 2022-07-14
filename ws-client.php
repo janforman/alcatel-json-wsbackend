@@ -225,7 +225,7 @@ while (true) {
 
     $json = array();
     foreach ($slist as $key => $value) {
-        @$json[$value] = '"inqueue" : 0,"logged" : ' . int($activeSkill[$key][2]) . ',"available" : ' . int($activeSkill[$key][0]);
+        @$json[$value] = '"inqueue" : 0,"logged" : ' . intval($activeSkill[$key][2]) . ',"available" : ' . intval($activeSkill[$key][0]);
     }
 
     // send to websocket

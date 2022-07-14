@@ -9,6 +9,7 @@ socket_bind($socket, $address, $port);
 socket_listen($socket);
 $clients = [$socket];
 $null = null;
+
 while (true) {
     $newClientReader = $clients;
     if (socket_select($newClientReader, $null, $null, 12) < 1) continue;
@@ -27,14 +28,18 @@ while (true) {
             sendMessage($clients, $message);
             break 2;
         }
-        $clientData = @socket_read($client, 4096, PHP_NORMAL_READ);
-        if ($clientData === false) {
+
+        $code = socket_last_error($client);
+        socket_clear_error($client);
+        if ($code != SOCKET_EAGAIN) {
+            // Connection most likely closed
             $clientIndex = array_search($client, $clients);
             unset($clients[$clientIndex]);
             echo "Client disconnected. Total: " . count($clients) - 1 . "\n";
         }
     }
 }
+
 function sendMessage($clients, $message)
 {
     $message = encodeMessage($message);
@@ -57,6 +62,7 @@ function encodeMessage($socketData)
         $header = pack('CCNN', $b1, 127, $length);
     return $header . $socketData;
 }
+
 function decodeMessage($socketData)
 {
     $length = ord($socketData[1]) & 127;

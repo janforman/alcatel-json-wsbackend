@@ -2,6 +2,7 @@
  Description=Alcatel Client
  ConditionPathExists=/opt/ws-client.php
  Wants=ws-server.service
+ Requires=ws-server.service
 
 [Service]
  Type=simple

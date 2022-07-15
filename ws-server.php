@@ -17,6 +17,7 @@ while (true) {
         $newClient = socket_accept($socket);
         $clients[] = $newClient;
         echo "Client connected. Total: " . count($clients) - 1 . "\n";
+        socket_set_nonblock($newClient);
         $header = socket_read($newClient, 4096);
         handshake($newClient, $header);
         $newClientIndex = array_search($socket, $newClientReader);

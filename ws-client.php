@@ -183,6 +183,7 @@ $headers .= "Sec-WebSocket-Key: $key\r\n";
 
 socket_write($client, $headers, strlen($headers));
 
+// Login to ROXE
 $AlcUserId = getAlcUserId();
 $JSESSIONID = getSession($AlcUserId);
 
@@ -205,19 +206,21 @@ while (true) {
         // total ready agents
         if ($activecalls['calls'] == array()) $readyagents++;
 
-        foreach ($agentconfig['skills']['skills'] as $value) {
-            $skill = $value['number'];
-            $skill_active = $value['active'];
-            if ($skill_active == 1) $skill_active = 1;
-            else $skill_active = 0;
+        if ($agentconfig) {
+            foreach ($agentconfig['skills']['skills'] as $value) {
+                $skill = $value['number'];
+                $skill_active = $value['active'];
+                if ($skill_active == 1) $skill_active = 1;
+                else $skill_active = 0;
 
-            // agent ready
-            if ($activecalls['calls'] == array() and $skill_active == 1) {
-                $ready = 1;
-            } else $ready = 0;
+                // agent ready
+                if ($activecalls['calls'] == array() and $skill_active == 1) {
+                    $ready = 1;
+                } else $ready = 0;
 
-            // available agents, total agents, activated agents
-            $activeSkill[$skill] = @array($activeSkill[$skill][0] + $ready, $activeSkill[$skill][1] + 1, $activeSkill[$skill][2] + $skill_active);
+                // available agents, total agents, activated agents
+                $activeSkill[$skill] = @array($activeSkill[$skill][0] + $ready, $activeSkill[$skill][1] + 1, $activeSkill[$skill][2] + $skill_active);
+            }
         }
         // loop
     }

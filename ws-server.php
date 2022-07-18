@@ -1,45 +1,6 @@
 <?php
 // WebSocket server
-
 require('config.php');
-
-$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-socket_set_option($socket, SOL_SOCKET, SO_REUSEADDR, 1);
-socket_bind($socket, $address, $port);
-socket_listen($socket, 5);
-$clients = [$socket];
-$null = null;
-
-while (true) {
-    $newClientReader = $clients;
-    if (socket_select($newClientReader, $null, $null, 10) < 1) continue;
-    if (in_array($socket, $newClientReader)) {
-        $newClient = socket_accept($socket);
-        $clients[] = $newClient;
-        echo "Client connected. Total: " . count($clients) - 1 . "\n";
-        socket_set_nonblock($newClient);
-        $header = socket_read($newClient, 4096);
-        handshake($newClient, $header);
-        $newClientIndex = array_search($socket, $newClientReader);
-        unset($newClientReader[$newClientIndex]);
-    }
-    foreach ($newClientReader as $client) {
-        while (@socket_recv($client, $clientData, 4096, 0) >= 1) {
-            $message = decodeMessage($clientData);
-            sendMessage($clients, $message);
-            break 2;
-        }
-
-        $code = socket_last_error($client);
-        socket_clear_error($client);
-        if ($code != SOCKET_EAGAIN and $code != 0) {
-            // Connection most likely closed
-            $clientIndex = array_search($client, $clients);
-            unset($clients[$clientIndex]);
-            echo "Client disconnected: " . socket_strerror($code) . " Total: " . count($clients) - 1 . "\n";
-        }
-    }
-}
 
 function sendMessage($clients, $message)
 {
@@ -48,7 +9,6 @@ function sendMessage($clients, $message)
         @socket_write($client, $message, strlen($message));
     }
 }
-socket_close($socket);
 
 function encodeMessage($socketData)
 {
@@ -100,3 +60,43 @@ function handshake($client_socket_resource, $received_header)
         "Sec-WebSocket-Accept:$secAccept\r\n\r\n";
     socket_write($client_socket_resource, $buffer, strlen($buffer));
 }
+
+// WebSocket server Startup
+$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+socket_set_option($socket, SOL_SOCKET, SO_REUSEADDR, 1);
+socket_bind($socket, $address, $port);
+socket_listen($socket, 5);
+$clients = [$socket];
+$null = null;
+
+while (true) {
+    $newClientReader = $clients;
+    if (socket_select($newClientReader, $null, $null, 10) < 1) continue;
+    if (in_array($socket, $newClientReader)) {
+        $newClient = socket_accept($socket);
+        $clients[] = $newClient;
+        echo "Client connected. Total: " . count($clients) - 1 . "\n";
+        socket_set_nonblock($newClient);
+        $header = socket_read($newClient, 4096);
+        handshake($newClient, $header);
+        $newClientIndex = array_search($socket, $newClientReader);
+        unset($newClientReader[$newClientIndex]);
+    }
+    foreach ($newClientReader as $client) {
+        while (@socket_recv($client, $clientData, 4096, 0) >= 1) {
+            $message = decodeMessage($clientData);
+            sendMessage($clients, $message);
+            break 2;
+        }
+
+        $code = socket_last_error($client);
+        socket_clear_error($client);
+        if ($code != SOCKET_EAGAIN and $code != 0) {
+            // Connection most likely closed
+            $clientIndex = array_search($client, $clients);
+            unset($clients[$clientIndex]);
+            echo "Client disconnected: " . socket_strerror($code) . " Total: " . count($clients) - 1 . "\n";
+        }
+    }
+}
+socket_close($socket);

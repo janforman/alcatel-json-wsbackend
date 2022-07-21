@@ -99,4 +99,3 @@ while (true) {
         }
     }
 }
-socket_close($socket);

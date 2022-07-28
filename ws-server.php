@@ -52,7 +52,7 @@ function handshake($client_socket_resource, $received_header)
         $line = chop($line);
         if (preg_match('/\A(\S+): (.*)\z/', $line, $matches)) $headers[$matches[1]] = $matches[2];
     }
-    $secKey = $headers['Sec-WebSocket-Key'];
+    $secKey = @$headers['Sec-WebSocket-Key'];
     $secAccept = base64_encode(pack('H*', sha1($secKey . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11')));
     $buffer  = "HTTP/1.1 101 Web Socket Protocol Handshake\r\n" .
         "Upgrade: websocket\r\n" .

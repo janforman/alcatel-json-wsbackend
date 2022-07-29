@@ -1,4 +1,5 @@
 <?php
+ini_set('default_socket_timeout', 3);
 require('config.php');
 
 // skill list
@@ -275,7 +276,7 @@ while (true) {
 
     sleep(2);
     // rcs as status
-    $rcs = '{"event":"RCS","data":{"rcsstatus":"OK"}}';
+    if (@file_get_contents($GLOBALS['rcsurl'], false)) $rcs = '{"event":"RCS","data":{"rcsstatus":"OK"}}'; else  $rcs = '{"event":"RCS","data":{"rcsstatus":"!!!"}}';
     $response = hybi10Encode($rcs);
     @socket_write($client, $response, strlen($response));
 }

@@ -7,3 +7,4 @@ $numbers = array('oxe1', 'oxe2');
 
 $GLOBALS['basicauth'] = base64_encode("user:pass");
 $GLOBALS['alcurl'] = 'https://10.0.0.2';
+$GLOBALS['rcsurl'] = 'https://10.0.0.3';

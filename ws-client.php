@@ -19,7 +19,7 @@ $slist[112] = 'Stod';
 $slist[113] = 'Nyrany';
 $slist[114] = 'Stribro';
 $slist[115] = 'PCO';
-$slist[999] = 'Paleni';
+$slist[117] = 'Paleni';
 $GLOBALS['JSESSIONIDEXP'] = 0;
 
 function hybi10Decode($data)

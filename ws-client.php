@@ -198,14 +198,15 @@ while (true) {
         $JSESSIONID = getSession($AlcUserId);
     }
     $readyagents = 0;
+    $totalagents = 0;
     unset($activeSkill);
+
     foreach ($numbers as $loginName) {
         $activecalls = json_decode(getAlcatel('/telephony/calls',  $JSESSIONID, $AlcUserId, $loginName), true);
         if ($activecalls == false) continue; // ops read failure continue on next number
         $agentconfig = json_decode(getAlcatel('/acd/agent/config',  $JSESSIONID, $AlcUserId, $loginName), true);
-
-        // total ready agents
-        if ($activecalls['calls'] == array()) $readyagents++;
+        $agentlogged = false;
+        $agentloggedready = false;
 
         if ($agentconfig) {
             foreach ($agentconfig['skills']['skills'] as $value) {
@@ -214,15 +215,23 @@ while (true) {
                 if ($skill_active == 1) $skill_active = 1;
                 else $skill_active = 0;
 
+                // agent loggedin
+                if ($skill_active == 1) {
+                    $agentlogged = true;
+                }
                 // agent ready
                 if ($activecalls['calls'] == array() and $skill_active == 1) {
                     $ready = 1;
+                    $agentloggedready = true;
                 } else $ready = 0;
 
                 // available agents, total agents, activated agents
                 $activeSkill[$skill] = @array($activeSkill[$skill][0] + $ready, $activeSkill[$skill][1] + 1, $activeSkill[$skill][2] + $skill_active);
             }
         }
+        // total and ready agents
+        if ($agentloggedready) $readyagents++;
+        if ($agentlogged) $totalagents++;
         // loop
     }
     // Alcatel connector
@@ -238,9 +247,9 @@ while (true) {
         "event" : "hasici",
         "data" : {
            "alles" : [
-              {"name" : "HZSPK","inqueue" : 0,"logged" : ' . count($numbers) . ',"available" : ' . $readyagents . ',"sortindex" : 61},
+              {"name" : "HZSPK","inqueue" : 0,"logged" : ' . $totalagents . ',"available" : ' . $readyagents . ',"sortindex" : 61},
               {"name" : "PCO",' . $json['PCO'] . ',"sortindex" : 62},
-              {"name" : "Paleni","inqueue" : 0,"logged" : 0,"available" : 0,"sortindex" : 63}
+              {"name" : "Paleni",' . $json['Paleni'] . ',"sortindex" : 63}
            ],
            "plzen" : [
               {"name" : "Blovice",' . $json['Blovice'] . ',"sortindex" : 11},
@@ -276,7 +285,8 @@ while (true) {
 
     sleep(2);
     // rcs as status
-    if (@file_get_contents($GLOBALS['rcsurl'], false)) $rcs = '{"event":"RCS","data":{"rcsstatus":"OK"}}'; else  $rcs = '{"event":"RCS","data":{"rcsstatus":"!!!"}}';
+    if (@file_get_contents($GLOBALS['rcsurl'], false)) $rcs = '{"event":"RCS","data":{"rcsstatus":"OK"}}';
+    else  $rcs = '{"event":"RCS","data":{"rcsstatus":"!!!"}}';
     $response = hybi10Encode($rcs);
     @socket_write($client, $response, strlen($response));
 }

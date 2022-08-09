@@ -1,0 +1,142 @@
+/* app css stylesheet */
+
+
+body {
+	background-color: black;
+	color: lightgray;
+	font-size: 164%;
+}
+
+a:link {
+	COLOR: #ffffff;
+	TEXT-DECORATION: none
+}
+
+#status.normal {
+	color: #ffffff;
+	padding: 0.2em 0.2em 0.2em 0.2em;
+}
+
+#status.warning {
+	color: red;
+	padding: 0.2em 0.2em 0.2em 0.2em;
+}
+
+
+.ramecek {
+	border: 2px solid darkgray;
+	margin: -1px;
+
+}
+
+.ramecekblack {
+	margin: -1px;
+}
+
+.ramecekwarn {
+	border: 2px solid red;
+}
+
+.pozadi {
+	background-color: gray;
+	color: white;
+}
+
+
+.queued {
+	font-size: 464%;
+	transform: scale(1, 1.24);
+	text-align: center;
+	margin: -0.4em;
+	padding: 0px;
+	padding-bottom: 0.1em;
+	padding-top: 0.1em;
+}
+
+
+.nadpis {
+	padding: 0.2em 0.2em 0.2em 0.2em;
+	text-align: center;
+}
+
+
+.posun {
+	padding-top: 2em;
+}
+
+
+.warn {
+	color: red;
+	background-color: black;
+}
+
+.noagent {
+	background-color: yellow;
+	color: black;
+	text-decoration: blink;
+	animation-name: blinker;
+	animation-duration: 0.4s;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+	animation-direction: alternate;
+}
+
+@-webkit-keyframes blinker {
+	from {
+		opacity: 1.0;
+	}
+	to {
+		opacity: 0.5;
+	}
+}
+
+
+.nadpiswarn {
+	color: white;
+	background-color: red;
+
+}
+
+.nadpiswarnrcs {
+	color: red;
+	text-decoration: blink;
+	animation-name: blinker;
+	animation-duration: 0.4s;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+	animation-direction: alternate;
+}
+
+@media (min-width: 768px) {
+
+	.seven-cols .col-md-1,
+	.seven-cols .col-sm-1,
+	.seven-cols .col-lg-1 {
+		width: 100%;
+		*width: 100%;
+	}
+}
+
+@media (min-width: 992px) {
+
+	.seven-cols .col-md-1,
+	.seven-cols .col-sm-1,
+	.seven-cols .col-lg-1 {
+		width: 14.285714285714285714285714285714%;
+		*width: 14.285714285714285714285714285714%;
+	}
+}
+
+/**
+ *  The following is not really needed in this case
+ *  Only to demonstrate the usage of @media for large screens
+ */
+@media (min-width: 1200px) {
+
+	.seven-cols .col-md-1,
+	.seven-cols .col-sm-1,
+	.seven-cols .col-lg-1 {
+		width: 14.285714285714285714285714285714%;
+		*width: 14.285714285714285714285714285714%;
+	}
+}

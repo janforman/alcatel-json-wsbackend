@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="cs">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>WallBoard</title>
+	<link rel="stylesheet" href="css/bootstrap-3.4.1.min.css">
+	<link rel="stylesheet" href="css/app.css">
+
+	<script src="js/jquery-1.11.3.min.js"></script>
+	<script src="js/angular-1.4.14.min.js"></script>
+	<script src="js/angular-ui-bootstrap-0.11.0.js"></script>
+	<script src="js/angular-localstorage.js"></script>
+	<script src="js/bootstrap-3.4.1.min.js"></script>
+	<script src="js/ng-websocket.js"></script>
+
+	<script src="js/ipaddress.js"></script>
+	<script src="js/WallBoard-model-controll-3.js"></script>
+</head>
+
+<body ng-app="myApp">
+	<div class="container-fluid">
+		<div class="row">
+			<div ng-controller="myCtrl">
+				<div class="col-lg-12 ">
+					<div class="row container-fluid">
+						<div id="ORPs">
+							<div class="row container-fluid seven-cols">
+								<div class="col-sm-1 ramecek" ng-repeat="orp in ORPs"
+									ng-class="{'ramecekwarn': orp.inqueue!=0}">
+									<div class="row nadpis pozadi text-center"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'noagent': orp.logged == 0}">
+										<span><big> <big>{{ orp.name }}</big></big></span>
+									</div>
+									<div class="row"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'none': orp.inqueue==0, 'noagent': orp.logged == 0}">
+										<p class="queued" ng-show="orp.available!=0"><big><big>{{ orp.available}}</big></big></p>
+										<p class="queued" ng-show="orp.available==0 && orp.inqueue==0"><big><big>{{orp.available }}</big></big></p>
+										<p class="queued" ng-show="orp.available==0 && orp.inqueue>0"><big><big>{{orp.inqueue }}</big></big></p>
+									</div>
+									<div class="row"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'none': orp.inqueue==0, 'noagent': orp.logged == 0}">
+										<span class="col-lg-9 nadpis">dostupných / přihlášeno: </span><span
+											class="col-lg-3 nadpis">{{ orp.available }} / {{ orp.logged }} </span>
+									</div>
+								</div>
+							</div>
+
+							<div class="row container-fluid seven-cols">
+								<div class="col-sm-1 ramecek" ng-repeat="orp in ALLES | myNameFilter "
+									ng-class="{'ramecekwarn': orp.inqueue!=0}">
+									<div class="row nadpis pozadi text-center"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'noagent': orp.logged == 0}">
+										<span><big> <big>{{ orp.name }}</big></big></span>
+									</div>
+									<div class="row"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'none': orp.inqueue==0, 'noagent': orp.logged == 0}">
+										<p class="queued" ng-show="orp.available!=0"><big><big>{{ orp.available}}</big></big></p>
+										<p class="queued" ng-show="orp.available==0 && orp.inqueue==0"><big><big>{{orp.available }}</big></big></p>
+										<p class="queued" ng-show="orp.available==0 && orp.inqueue>0"><big><big>{{orp.inqueue }}</big></big></p>
+									</div>
+									<div class="row"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'none': orp.inqueue==0, 'noagent': orp.logged == 0}">
+										<span class="col-lg-9 nadpis">dostupných / přihlášeno: </span><span
+											class="col-lg-3 nadpis">{{ orp.available }} / {{ orp.logged }} </span>
+									</div>
+								</div>
+
+								<div class="col-sm-1 ramecekblack"> &nbsp </div>
+								<div class="col-sm-1 ramecekblack"> &nbsp </div>
+								<div class="col-sm-1 ramecekblack"> &nbsp </div>
+
+								<div class="col-sm-1 ramecek">
+									<div class="row nadpis pozadi text-center">
+										<span ng-show="status.state==0"><big> <big>Stav RCS serveru</big></big></span>
+										<span ng-show="status.state!=0"><big> <big>Chyba</big></big></span>
+									</div>
+									<div class="row"
+										ng-class="{'nadpiswarnrcs': RCS.text!='OK', 'none': RCS.text=='OK'}">
+										<p class="queued" id="RCS" ng-show="status.state==0"><big>
+												<big>{{RCS.text}}</big></big></p>
+									</div>
+									<div class="row">
+										<span class="col-lg-12 nadpis" id="status"
+											ng-class="{'warning': status.state!=0, 'normal': status.state==0}">{{
+											status.text }}</span>
+
+									</div>
+								</div>
+							</div>
+
+							<div class="row container-fluid seven-cols">
+								<div class="col-lg-1 ramecek" ng-repeat="orp in PLZEN | myNameFilter"
+									ng-class="{'ramecekwarn': orp.inqueue!=0}">
+									<div class="row nadpis pozadi text-center"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'noagent': orp.logged == 0}">
+										<span><big> <big>{{ orp.name }}</big></big></span>
+									</div>
+									<div class="row"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'none': orp.inqueue==0, 'noagent': orp.logged == 0}">
+										<p class="queued" ng-show="orp.available!=0"><big><big>{{ orp.available
+													}}</big></big></p>
+										<p class="queued" ng-show="orp.available==0 && orp.inqueue==0"><big><big>{{
+													orp.available }}</big></big></p>
+										<p class="queued" ng-show="orp.available==0 && orp.inqueue>0"><big><big>{{
+													orp.inqueue }}</big></big></p>
+									</div>
+									<div class="row"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'none': orp.inqueue==0, 'noagent': orp.logged == 0}">
+										<span class="col-lg-9 nadpis">dostupných / přihlášeno: </span><span
+											class="col-lg-3 nadpis">{{ orp.available }} / {{ orp.logged }} </span>
+									</div>
+								</div>
+							</div>
+
+							<div class="row container-fluid seven-cols">
+								<div class="col-sm-1 ramecek" ng-repeat="orp in DOMAZLICE |  myNameFilter"
+									ng-class="{'ramecekwarn': orp.inqueue!=0}">
+									<div class="row nadpis pozadi text-center"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'noagent': orp.logged == 0}">
+										<span><big> <big>{{ orp.name }}</big></big></span>
+									</div>
+									<div class="row"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'none': orp.inqueue==0, 'noagent': orp.logged == 0}">
+										<p class="queued" ng-show="orp.available!=0"><big><big>{{ orp.available
+													}}</big></big></p>
+										<p class="queued" ng-show="orp.available==0 && orp.inqueue==0"><big><big>{{
+													orp.available }}</big></big></p>
+										<p class="queued" ng-show="orp.available==0 && orp.inqueue>0"><big><big>{{
+													orp.inqueue }}</big></big></p>
+									</div>
+									<div class="row"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'none': orp.inqueue==0, 'noagent': orp.logged == 0}">
+										<span class="col-lg-9 nadpis">dostupných / přihlášeno: </span><span
+											class="col-lg-3 nadpis">{{ orp.available }} / {{ orp.logged }} </span>
+									</div>
+								</div>
+							</div>
+
+							<div class="row container-fluid seven-cols">
+								<div class="col-sm-1 ramecek" ng-repeat="orp in TACHOV |  myNameFilter"
+									ng-class="{'ramecekwarn': orp.inqueue!=0}">
+									<div class="row nadpis pozadi text-center"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'noagent': orp.logged == 0}">
+										<span><big> <big>{{ orp.name }}</big></big></span>
+									</div>
+									<div class="row"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'none': orp.inqueue==0, 'noagent': orp.logged == 0}">
+										<p class="queued" ng-show="orp.available!=0"><big><big>{{ orp.available
+													}}</big></big></p>
+										<p class="queued" ng-show="orp.available==0 && orp.inqueue==0"><big><big>{{
+													orp.available }}</big></big></p>
+										<p class="queued" ng-show="orp.available==0 && orp.inqueue>0"><big><big>{{
+													orp.inqueue }}</big></big></p>
+									</div>
+									<div class="row"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'none': orp.inqueue==0, 'noagent': orp.logged == 0}">
+										<span class="col-lg-9 nadpis">dostupných / přihlášeno: </span><span
+											class="col-lg-3 nadpis">{{ orp.available }} / {{ orp.logged }} </span>
+									</div>
+								</div>
+							</div>
+
+							<div class="row seven-cols container-fluid">
+								<div class="col-sm-1 ramecek" ng-repeat="orp in KLATOVY |  myNameFilter"
+									ng-class="{'ramecekwarn': orp.inqueue!=0}">
+									<div class="row nadpis pozadi text-center"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'noagent': orp.logged == 0}">
+										<span><big> <big>{{ orp.name }}</big></big></span>
+									</div>
+									<div class="row"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'none': orp.inqueue==0, 'noagent': orp.logged == 0}">
+										<p class="queued" ng-show="orp.available!=0"><big><big>{{ orp.available
+													}}</big></big></p>
+										<p class="queued" ng-show="orp.available==0 && orp.inqueue==0"><big><big>{{
+													orp.available }}</big></big></p>
+										<p class="queued" ng-show="orp.available==0 && orp.inqueue>0"><big><big>{{
+													orp.inqueue }}</big></big></p>
+									</div>
+									<div class="row"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'none': orp.inqueue==0, 'noagent': orp.logged == 0}">
+										<span class="col-lg-9 nadpis">dostupných / přihlášeno: </span><span
+											class="col-lg-3 nadpis">{{ orp.available }} / {{ orp.logged }} </span>
+									</div>
+								</div>
+
+								<div class="col-sm-1 ramecekblack"> &nbsp </div>
+								<div class="col-sm-1 ramecekblack"> &nbsp </div>
+								<div class="col-sm-1 ramecekblack"> &nbsp </div>
+
+								<div class="col-sm-1 ramecek" ng-repeat="orp in ROKYCANY |  myNameFilter"
+									ng-class="{'ramecekwarn': orp.inqueue!=0}">
+									<div class="row nadpis pozadi text-center"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'noagent': orp.logged == 0}">
+										<span><big> <big>{{ orp.name }}</big></big></span>
+									</div>
+									<div class="row"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'none': orp.inqueue==0, 'noagent': orp.logged == 0}">
+										<p class="queued" ng-show="orp.available!=0"><big><big>{{ orp.available
+													}}</big></big></p>
+										<p class="queued" ng-show="orp.available==0 && orp.inqueue==0"><big><big>{{
+													orp.available }}</big></big></p>
+										<p class="queued" ng-show="orp.available==0 && orp.inqueue>0"><big><big>{{
+													orp.inqueue }}</big></big></p>
+									</div>
+									<div class="row"
+										ng-class="{'nadpiswarn': orp.inqueue!=0, 'none': orp.inqueue==0, 'noagent': orp.logged == 0}">
+										<span class="col-lg-9 nadpis">dostupných / přihlášeno: </span><span
+											class="col-lg-3 nadpis">{{ orp.available }} / {{ orp.logged }} </span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div id="kraje">
+							<div class="col-sm-2 ramecek" ng-repeat="kraj in kraje "
+								ng-class="{'ramecekwarn': kraj.deadtimer>2}">
+								<div class="row nadpis pozadi text-center" ng-class="{'nadpiswarn': kraj.deadtimer>2}">
+									<span><big> <big>{{ kraj.name }} </big></big></span>
+								</div>
+								<div class="row ngHide" ng-hide="{{kraj.deadtimer>2}}">
+									<span class="col-lg-9 nadpis posun"><big>aktuálních hovorů: </big></span><span
+										class="col-lg-3 queued">{{ kraj.talking }}</span>
+								</div>
+								<div class="row ngHide" ng-hide="{{kraj.deadtimer<=2}}">
+									<span class="col-lg-9 nadpis posun"><big>aktuálních hovorů: </big></span><span
+										class="col-lg-3 queued">?</span>
+								</div>
+								<div class="row ngHide" ng-hide="{{kraj.deadtimer>2}}">
+									<span class="col-lg-9 nadpis">hovorů ve frontách: </span><span
+										class="col-lg-3 nadpis">{{ kraj.inqueue }}</span>
+								</div>
+								<div class="row ngHide" ng-hide="{{kraj.deadtimer>2}}">
+									<span class="col-lg-9 nadpis">nepřihlášených ORP: </span><span
+										class="col-lg-3 nadpis"> {{ kraj.logged }} </span>
+								</div>
+								<div class="row ngHide" ng-hide="{{kraj.deadtimer<=2}}">
+									<span class="col-lg-6 nadpis">naposledy se ohlásil: </span><span
+										class="col-lg-6 nadpis"> {{ kraj.lastupdate }} </span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

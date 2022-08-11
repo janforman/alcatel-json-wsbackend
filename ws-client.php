@@ -212,13 +212,11 @@ while (true) {
             foreach ($agentconfig['skills']['skills'] as $value) {
                 $skill = $value['number'];
                 $skill_active = $value['active'];
-                if ($skill_active == 1) $skill_active = 1;
-                else $skill_active = 0;
-
-                // agent loggedin
                 if ($skill_active == 1) {
-                    $agentlogged = true;
-                }
+                    $skill_active = 1;
+                    $agentlogged = true; // at least one skill active
+                } else $skill_active = 0;
+
                 // agent ready
                 if ($activecalls['calls'] == array() and $skill_active == 1) {
                     $ready = 1;
